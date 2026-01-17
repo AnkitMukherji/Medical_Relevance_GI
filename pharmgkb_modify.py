@@ -1,7 +1,6 @@
-# Annotating locations to variants of pharmGKB
-
 import pandas as pd
 
+# Annotating locations to variants of pharmGKB
 pharmgkb = pd.read_excel("clinicalVariants.xlsx")
 pharmgkb_rsids = pharmgkb.loc[pharmgkb['variant'].str.startswith('rs')]
 pharmgkb_loc = pd.read_csv("vep_result.txt", sep="\t", usecols=['#Uploaded_variation',

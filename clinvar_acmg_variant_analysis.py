@@ -3,7 +3,7 @@ import numpy as np
 from cyvcf2 import VCF
 from collections import defaultdict
 
-# Annotating P, P/LP and VUS Clinvar variants with known rsIDs in GI
+# Annotating P, P/LP and VUS Clinvar variants with known rsIDs with GenomeIndia population metrics
 clinvar_gi_id_ref_alt = pd.read_csv("rsid_known/id_ref_alt.txt", sep="\t", names=["SNP", "Ref", "Alt"])
 clinvar_gi_id_ref_alt["SNP"] = clinvar_gi_id_ref_alt["SNP"].str.split(";")
 clinvar_gi_id_ref_alt = clinvar_gi_id_ref_alt.explode("SNP").reset_index(drop=True)
@@ -59,7 +59,7 @@ final_clinvar_rsid = final_clinvar_rsid[["variant_ID", "Chromosome", "Start", "S
 
 final_clinvar_rsid.to_excel("rsid_known/clinvar_gi_with_rsid.xlsx", index=False)
 
-# Annotating P, P/LP and VUS Clinvar variants with unknown rsIDs in GI
+# Annotating P, P/LP and VUS Clinvar variants with unknown rsIDs with GenomeIndia population metrics
 clinvar_p_lp_vus_no_rsid = pd.read_csv("rsid_unknown_clinvar/clinvar_no_rsid.txt", sep="\t", names=['Type', 'Name', 'GeneSymbol', 
                                                                                                     'ClinicalSignificance', 
                                                                                                     'rsRS# (dbSNP)', 'PhenotypeList', 'Origin', 
@@ -181,11 +181,12 @@ final_clinvar_no_rsid_indel = final_clinvar_no_rsid_indel[["variant_ID", "Chromo
 final_clinvar_no_rsid_snv.to_excel("rsid_unknown_clinvar/clinvar_gi_with_no_rsid_snv.xlsx", index=False)
 final_clinvar_no_rsid_indel.to_excel("rsid_unknown_clinvar/clinvar_gi_with_no_rsid_indel.xlsx", index=False)
 
+# Appending both together to create a final annotation file
 final_clinvar_gi = pd.concat([final_clinvar_rsid, final_clinvar_no_rsid_snv, final_clinvar_no_rsid_indel], axis=0, ignore_index=True)
 final_clinvar_gi = final_clinvar_gi.drop_duplicates()
 final_clinvar_gi.to_excel("final_clinvar_gi.xlsx", index=False)
 
-# Per-sample genotype class of each Clinvar P, P/LP and VUS variants in GI
+# Per-sample genotype class of each Clinvar P, P/LP and VUS variants in GenomeIndia
 vcf = VCF("var_pos_gi_unrequired_ids_removed_unrequired_pos_removed.vcf.gz")
 samples = vcf.samples
 
